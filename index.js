@@ -1,22 +1,33 @@
 const express = require('express');
-const bodyParser = require('body-parser');
+const { Pool } = require('pg');
 const app = express();
 const port = 3000;
 
-app.use(bodyParser.json());
+// Middleware to parse JSON
+app.use(express.json());
 
-let todos = [];
-
-app.get('/todos', (req, res) => {
-  res.send(todos);
+// PostgreSQL connection
+const pool = new Pool({
+  user: 'samb',
+  host: 'localhost',
+  database: 'todo_db',
+  password: 'refreshing', 
+  port: 5432,
 });
 
-app.post('/todos', (req, res) => {
-    const newTodo = req.body;
-    todos.push(newTodo);
-    res.status(201).json(newTodo);
+// Test the database connection
+pool.connect((err) => {
+  if (err) {
+    return console.error('Error acquiring client', err.stack);
+  }
+  console.log('Connected to PostgreSQL database');
 });
+
+const todoRoutes = require('./todos');
+app.use('/api', todoRoutes);
 
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
 });
+
+module.exports = { pool };
