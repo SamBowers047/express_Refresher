@@ -1,19 +1,12 @@
 const express = require('express');
-const { Pool } = require('pg');
 const app = express();
+const pool = require('./db');
 const port = 3000;
 
 // Middleware to parse JSON
 app.use(express.json());
 
-// PostgreSQL connection
-const pool = new Pool({
-  user: 'samb',
-  host: 'localhost',
-  database: 'todo_db',
-  password: 'refreshing', 
-  port: 5432,
-});
+
 
 // Test the database connection
 pool.connect((err) => {
@@ -29,5 +22,7 @@ app.use('/api', todoRoutes);
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
 });
+
+app.use('/api', todoRoutes);
 
 module.exports = { pool };

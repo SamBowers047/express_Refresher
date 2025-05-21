@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { pool } = require('./index');
+const pool = require('./db');
 
 // GET /todos - Retrieve all to-do items
 router.get('/todos', async (req, res) => {
